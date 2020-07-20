@@ -19,6 +19,11 @@ app.use('/users', require('./routes/users'));
 app.use('/expenses', require('./routes/expenses'));
 app.use('/payments', require('./routes/payments'));
 
+// Test route
+app.get('/test-ping', (req, res) => {
+    res.status(200).send('<h1>It works!</h1>');
+});
+
 // Error handling
 app.use(errorHandler);
 
