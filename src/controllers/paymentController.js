@@ -7,30 +7,37 @@ const Payment = require('../models/Payment');
 exports.getPayments = async (req, res, next) => {
     try {
         let payments = {};
+        let filterPeriod;
 
         if (req.query.filterBy) {
-            const filterPeriod = getFilterPeriod(JSON.parse(req.query.filterBy).date);
+            filterPeriod = getFilterPeriod(JSON.parse(req.query.filterBy).date);
+        }
 
-            payments = await Payment.find({
-                ...(req.query.expenseID && { expense: req.query.expenseID }),
+        const options = {
+            ...(req.query.expenseID && { expense: req.query.expenseID }),
+            ...(req.query.filterBy && {
                 paydate: {
                     $gte: filterPeriod[0],
                     $lt: filterPeriod[1]
                 }
-            });
-        } else {
-            payments = await Payment.find({
-                ...(req.query.expenseID && { expense: req.query.expenseID })
-            });
+            })
         }
+
+        payments = await Payment.find(options).populate('expense').lean();
 
         if (isEmpty(payments)) {
             throw new ErrorHandler(404, `No payments found for the specified expense${req.query.filterBy ? ' and filters' : ''}`);
         }
 
+        if (req.query.withTotal) {
+            payments = {
+                payments,
+                total: payments.reduce((total, payment) => total + payment.amount, 0)
+            }
+        }
+
         res.status(200).send(payments);
     } catch (error) {
-        console.log("ERROR HAPPENED", error)
         next(error);
     }
 }

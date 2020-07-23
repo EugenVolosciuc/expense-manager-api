@@ -10,7 +10,7 @@ const paymentSchema = new mongoose.Schema({
     expense: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Expense',
-        required: true
+        // required: true
     },
     paydate: {
         type: Date,
@@ -22,9 +22,15 @@ const paymentSchema = new mongoose.Schema({
         required: true
     },
     details: {
-        type: String
+        type: String,
+        required: hasNoExpenseLinked
     }
 });
+
+function hasNoExpenseLinked() {
+    if (this.expense) return true
+    return false
+}
 
 const Payment = mongoose.model('Payment', paymentSchema, 'payment');
 
