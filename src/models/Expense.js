@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { EXPENSE_CATEGORIES } = require('../constants');
 
-const expenseTypes = ['MONTHLY', 'BIMONTHLY'];
+const EXPENSE_TYPES = ['MONTHLY', 'BIMONTHLY'];
 
 const expenseSchema = new mongoose.Schema({
     title: {
@@ -9,10 +10,15 @@ const expenseSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    category: {
+        type: String,
+        required: true,
+        enum: Object.keys(EXPENSE_CATEGORIES)
+    },
     type: {
         type: String,
         required: true,
-        enum: expenseTypes
+        enum: EXPENSE_TYPES
     },
     recurrent: {
         type: Boolean,

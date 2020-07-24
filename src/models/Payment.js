@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const Expense = require('./Expense');
+const { EXPENSE_CATEGORIES } = require('../constants');
 
 const paymentSchema = new mongoose.Schema({
     amount: {
@@ -10,7 +10,6 @@ const paymentSchema = new mongoose.Schema({
     expense: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Expense',
-        // required: true
     },
     paydate: {
         type: Date,
@@ -24,7 +23,13 @@ const paymentSchema = new mongoose.Schema({
     details: {
         type: String,
         required: hasNoExpenseLinked
-    }
+    },
+    category: {
+        type: String,
+        required: true,
+        enum: Object.values(EXPENSE_CATEGORIES),
+        required: hasNoExpenseLinked
+    },
 });
 
 function hasNoExpenseLinked() {
