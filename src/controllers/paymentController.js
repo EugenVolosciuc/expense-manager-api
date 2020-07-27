@@ -1,4 +1,4 @@
-const { isEmpty } = require('lodash');
+const { isEmpty, get } = require('lodash');
 
 const { ErrorHandler } = require('../helpers/error');
 const getFilterPeriod = require('../helpers/getFilterPeriod');
